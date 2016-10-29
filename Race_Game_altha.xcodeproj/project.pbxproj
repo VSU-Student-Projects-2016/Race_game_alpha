@@ -17,6 +17,9 @@
 		AEB08ED51DA924D90089C050 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AEB08ED31DA924D90089C050 /* LaunchScreen.storyboard */; };
 		AEB08EDD1DA92C9B0089C050 /* Car;).png in Resources */ = {isa = PBXBuildFile; fileRef = AEB08EDC1DA92C9B0089C050 /* Car;).png */; };
 		AEDC33121DB245B300E5CF2E /* ball.png in Resources */ = {isa = PBXBuildFile; fileRef = AEDC33111DB245B300E5CF2E /* ball.png */; };
+		AEFCDCAF1DC4A83700E5D47E /* EndScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEFCDCAE1DC4A83700E5D47E /* EndScene.swift */; };
+		AEFCDCB21DC4B3F600E5D47E /* MyParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = AEFCDCB01DC4B3F600E5D47E /* MyParticle.sks */; };
+		AEFCDCB31DC4B3F600E5D47E /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = AEFCDCB11DC4B3F600E5D47E /* spark.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +35,9 @@
 		AEB08ED61DA924D90089C050 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AEB08EDC1DA92C9B0089C050 /* Car;).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Car;).png"; sourceTree = "<group>"; };
 		AEDC33111DB245B300E5CF2E /* ball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ball.png; sourceTree = "<group>"; };
+		AEFCDCAE1DC4A83700E5D47E /* EndScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EndScene.swift; sourceTree = "<group>"; };
+		AEFCDCB01DC4B3F600E5D47E /* MyParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = MyParticle.sks; path = ../MyParticle.sks; sourceTree = "<group>"; };
+		AEFCDCB11DC4B3F600E5D47E /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spark.png; path = ../spark.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,11 +76,14 @@
 				AEB08EC61DA924D90089C050 /* GameScene.sks */,
 				AEB08EC81DA924D90089C050 /* Actions.sks */,
 				AEB08ECA1DA924D90089C050 /* GameScene.swift */,
+				AEFCDCAE1DC4A83700E5D47E /* EndScene.swift */,
 				AEB08ECC1DA924D90089C050 /* GameViewController.swift */,
 				AEB08ECE1DA924D90089C050 /* Main.storyboard */,
 				AEB08ED11DA924D90089C050 /* Assets.xcassets */,
 				AEB08ED31DA924D90089C050 /* LaunchScreen.storyboard */,
 				AEB08ED61DA924D90089C050 /* Info.plist */,
+				AEFCDCB01DC4B3F600E5D47E /* MyParticle.sks */,
+				AEFCDCB11DC4B3F600E5D47E /* spark.png */,
 			);
 			path = Race_Game_altha;
 			sourceTree = "<group>";
@@ -142,6 +151,8 @@
 				AEB08EC71DA924D90089C050 /* GameScene.sks in Resources */,
 				AEB08EDD1DA92C9B0089C050 /* Car;).png in Resources */,
 				AEB08ED21DA924D90089C050 /* Assets.xcassets in Resources */,
+				AEFCDCB21DC4B3F600E5D47E /* MyParticle.sks in Resources */,
+				AEFCDCB31DC4B3F600E5D47E /* spark.png in Resources */,
 				AEB08ED51DA924D90089C050 /* LaunchScreen.storyboard in Resources */,
 				AEB08EC91DA924D90089C050 /* Actions.sks in Resources */,
 				AEDC33121DB245B300E5CF2E /* ball.png in Resources */,
@@ -157,6 +168,7 @@
 			files = (
 				AEB08ECB1DA924D90089C050 /* GameScene.swift in Sources */,
 				AEB08ECD1DA924D90089C050 /* GameViewController.swift in Sources */,
+				AEFCDCAF1DC4A83700E5D47E /* EndScene.swift in Sources */,
 				AEB08EC51DA924D90089C050 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
