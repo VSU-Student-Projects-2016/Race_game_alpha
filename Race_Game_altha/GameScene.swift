@@ -24,10 +24,14 @@ struct PhysicsCategory{
 class GameScene: SKScene, SKPhysicsContactDelegate {
 
     var Score = Int()
-    //Later ...
+    
     var HighScore = Int()
     
     var Player = SKSpriteNode(imageNamed: "Car;).png")
+    
+    
+    let actionLeft = SKAction.moveTo(y: -110, duration: 2.2)
+    let actionRight = SKAction.moveTo(y: +110, duration: 2.2)
     
     var ScoreLbl = UILabel()
     
@@ -54,7 +58,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
         self.addChild(SKEmitterNode(fileNamed: "MyParticle")!)
         
-        Player.position = CGPoint(x:0, y: -self.size.height / 10)
+        Player.position = CGPoint(x: -110, y: -self.size.height / 10)
         
         Player.physicsBody = SKPhysicsBody(rectangleOf: Player.size)
         Player.physicsBody?.affectedByGravity = false;
@@ -84,7 +88,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.view?.addSubview(ScoreLbl)
         
         HighScoreLbl.text = "\(HighScore)"
-        //HighScoreLbl = UILabel(frame: CGRect(x: 10, y: 0, width: 150, height: 50))
+        HighScoreLbl = UILabel(frame: CGRect(x: 10, y: 0, width: 150, height: 50))
         HighScoreLbl.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.3)
         HighScoreLbl.textColor = UIColor.white
         
@@ -99,17 +103,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         var firstBody:SKPhysicsBody = contact.bodyA
         var secondBody:SKPhysicsBody = contact.bodyB
-        
-        if ((firstBody.categoryBitMask == PhysicsCategory.Enemy) && (secondBody.categoryBitMask == PhysicsCategory.Bullet) ||
-            (firstBody.categoryBitMask == PhysicsCategory.Bullet) && (secondBody.categoryBitMask == PhysicsCategory.Enemy)){
-            
-            if let a = firstBody.node as? SKSpriteNode{
-                if let b = secondBody.node as? SKSpriteNode{
-                    CollisionWithBullet(Enemy: a as! SKSpriteNode, Bullet: b as! SKSpriteNode)
-                    }
-                }
-            }
-        else if ((firstBody.categoryBitMask == PhysicsCategory.Enemy) && (secondBody.categoryBitMask == PhysicsCategory.Player) ||
+        if ((firstBody.categoryBitMask == PhysicsCategory.Enemy) && (secondBody.categoryBitMask == PhysicsCategory.Player) ||
             (firstBody.categoryBitMask == PhysicsCategory.Player) && (secondBody.categoryBitMask == PhysicsCategory.Enemy)){
             
             if let a = firstBody.node as? SKSpriteNode{
@@ -119,29 +113,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    
-    func CollisionWithBullet(Enemy : SKSpriteNode, Bullet : SKSpriteNode){
-        Enemy.removeFromParent()
-        Bullet.removeFromParent()
-        
-        Score+=1
-        
-        NSLog("\(Score)")
-        
-        ScoreLbl.text = "Score:  " + "\(Score)"
-        
-        if (Score > HighScore){
-            HighScoreLbl.text = "HighScore:  " + "\(Score)"
-        }
-        
-    }
-    
+
     
     func  CollisionWithPerson(Enemy:SKSpriteNode, Person:SKSpriteNode){
         Enemy.removeFromParent()
         Person.removeFromParent()
         self.view?.presentScene(EndScene())
         ScoreLbl.removeFromSuperview()
+        HighScoreLbl.removeFromSuperview()
         
         var ScoreDefault = UserDefaults.standard
         ScoreDefault.setValue(Score, forKey: "Score")
@@ -151,40 +130,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func SpawnBullets(){
         let Bullet = SKSpriteNode(imageNamed: "ball.png")
         Bullet.zPosition = -5
-        Bullet.position = CGPoint(x:Player.position.x, y: Player.position.y)
-        let action = SKAction.moveTo(y: self.size.height/10 + 32, duration: 1.2)
+        Bullet.position = CGPoint(x: 0, y: 500)
+        let action = SKAction.moveTo(y: -size.height/10 - 250, duration: 2.2)
         let actionDone = SKAction.removeFromParent()
         
         Bullet.run(SKAction.sequence([action, actionDone]))
         Bullet.run(SKAction.repeatForever(action))
         
-        Bullet.physicsBody = SKPhysicsBody(rectangleOf: Bullet.size)
-        Bullet.physicsBody?.affectedByGravity = false;
-        Bullet.physicsBody?.categoryBitMask = PhysicsCategory.Bullet
-        Bullet.physicsBody?.contactTestBitMask = PhysicsCategory.Enemy
-        Bullet.physicsBody?.affectedByGravity = false
+        //Bullet.physicsBody = SKPhysicsBody(rectangleOf: Bullet.size)
         
         
         self.addChild(Bullet)
     }
     
     func SpawnEnemies(){
-    
         var Enemy = SKSpriteNode(imageNamed: "Car;).png")
-        var MinValue = self.size.width / 1000
-        var MaxValue = self.size.width
+        var MinValue = 0
+        var MaxValue = 1
         var SpawnPoint = UInt32(MaxValue - MinValue)
         
-        Enemy.position = CGPoint(x: CGFloat(arc4random_uniform(SpawnPoint)) - 300,
-            y:self.size.height / 10)
+        Enemy.position = CGPoint(x: 200*CGFloat(arc4random_uniform(2)) - 110,
+            y:self.size.height/2 )
         print(Enemy.position)
-        let action = SKAction.moveTo(y: -size.height/10 - 100, duration: 1.2)
+        
+        let action = SKAction.moveTo(y: -100, duration: max(TimeInterval(Int32(10 - Score)),2))
         
         let actionDone = SKAction.removeFromParent()
+        let actionCallBlock = SKAction.run {
+            self.Score+=1
+            
+            NSLog("\(self.Score)")
+            
+            self.ScoreLbl.text = "Score:  " + "\(self.Score)"
+            
+            if (self.Score > self.HighScore){
+                self.HighScoreLbl.text = "HighScore:  " + "\(self.Score)"
+            }
+        }
         
-        
-        
-        Enemy.run(SKAction.sequence([action, actionDone]))
+        Enemy.run(SKAction.sequence([action, actionCallBlock, actionDone]))
         
         
         
@@ -205,22 +189,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for touch:AnyObject in touches{
             let location = touch.location(in: self)
             
-            // doSomethingFor
-            // doSomething(for:
             
-            Player.position.x = location.x
+            if (location.x > 0){
+                Player.position.x = 200*1 - 110
+            }
+            else {
+                
+                Player.position.x = 200*0 - 110
+            }
         }
     
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        for touch:AnyObject in touches{
-            let location = touch.location(in: self)
-            
-            Player.position.x = location.x
-        }
-
-    }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
