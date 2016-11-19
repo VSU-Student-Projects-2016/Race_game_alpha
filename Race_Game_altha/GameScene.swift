@@ -24,6 +24,7 @@ struct PhysicsCategory{
 class GameScene: SKScene, SKPhysicsContactDelegate {
 
     var Score = Int()
+    //HighScore?
     var HighScore = Int()
     var Player = SKSpriteNode(imageNamed: "Car;).png")
     let actionPL = SKAction.moveTo(x: -110, duration: 0.1)

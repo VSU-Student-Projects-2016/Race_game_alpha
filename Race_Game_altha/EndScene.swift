@@ -32,6 +32,7 @@ class EndScene : SKScene{
         self.view?.addSubview(RestartBtn)
         
         var ScoreDefault = UserDefaults.standard
+        
         //warning!!!
         var Score = ScoreDefault.value(forKey: "Score") as! NSInteger
         NSLog("\(Score)")
