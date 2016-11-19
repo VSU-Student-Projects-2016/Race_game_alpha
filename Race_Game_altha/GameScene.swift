@@ -24,11 +24,11 @@ struct PhysicsCategory{
 class GameScene: SKScene, SKPhysicsContactDelegate {
 
     var Score = Int()
-    
     var HighScore = Int()
-    
     var Player = SKSpriteNode(imageNamed: "Car;).png")
-    
+    let actionPL = SKAction.moveTo(x: -110, duration: 0.1)
+    let actionPR = SKAction.moveTo(x: 90, duration: 0.1)
+    var Enemies = [SKSpriteNode]()
     
     let actionLeft = SKAction.moveTo(y: -110, duration: 2.2)
     let actionRight = SKAction.moveTo(y: +110, duration: 2.2)
@@ -44,7 +44,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         var HighscoreDefaults = UserDefaults.standard
         if (HighscoreDefaults.value(forKey: "Highscore") != nil){
-            HighScore = HighscoreDefaults.integer(forKey: "Highscore")
+            HighScore = HighscoreDefaults.integer(forKey: "Highscore") as NSInteger
         }
         else
         {
@@ -116,14 +116,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     
     func  CollisionWithPerson(Enemy:SKSpriteNode, Person:SKSpriteNode){
+        var ScoreDefaults = UserDefaults.standard
+        ScoreDefaults.setValue(Score, forKey: "Score")
+        ScoreDefaults.synchronize()
+        
+        if (Score > HighScore){
+            var HighscoreDefault = UserDefaults.standard
+            HighscoreDefault.setValue(Score, forKey: "Highscore")
+        }
+        
         Enemy.removeFromParent()
         Person.removeFromParent()
         self.view?.presentScene(EndScene())
         ScoreLbl.removeFromSuperview()
         HighScoreLbl.removeFromSuperview()
         
-        var ScoreDefault = UserDefaults.standard
-        ScoreDefault.setValue(Score, forKey: "Score")
+        
     }
     
     
@@ -145,15 +153,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func SpawnEnemies(){
         var Enemy = SKSpriteNode(imageNamed: "Car;).png")
+        Enemies.append(Enemy)
         var MinValue = 0
         var MaxValue = 1
         var SpawnPoint = UInt32(MaxValue - MinValue)
         
         Enemy.position = CGPoint(x: 200*CGFloat(arc4random_uniform(2)) - 110,
             y:self.size.height/2 )
-        print(Enemy.position)
         
-        let action = SKAction.moveTo(y: -100, duration: max(TimeInterval(Int32(10 - Score)),2))
+        let sz = Double(Int32(Enemy.position.y)/Int32(self.size.height/2))
+        
+        let action = SKAction.moveTo(y: -400, duration: max(TimeInterval(Int32(10 - Score)),2))
+        //array and delete ild action and new action with smaller time
+        
+        if Score == 10{
+            sleep(1)
+        }
         
         let actionDone = SKAction.removeFromParent()
         let actionCallBlock = SKAction.run {
@@ -167,9 +182,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.HighScoreLbl.text = "HighScore:  " + "\(self.Score)"
             }
         }
-        
-        Enemy.run(SKAction.sequence([action, actionCallBlock, actionDone]))
-        
+        Enemy.run(SKAction.sequence([action, actionCallBlock, actionDone]), withKey: "move")
+        for enm in Enemies{
+            
+            //print(enm.position.y)
+            //print(self.size.height/2)
+            
+            let sz = Double((Double(enm.position.y) + 401)/(Double(self.size.height/2 + 401)))
+            //print("sz = ", enm.position.y, self.size.height/2, sz )
+            
+            let actionT = SKAction.moveTo(y: -400, duration: max(TimeInterval(Int32(10 - Score)),2)*sz)
+            
+            //array and delete ild action and new action with smaller time
+            
+            
+            
+            let actionDoneT = SKAction.removeFromParent()
+            let actionCallBlockT = SKAction.run {
+                self.Score+=1
+                
+                NSLog("\(self.Score)")
+                
+                self.ScoreLbl.text = "Score:  " + "\(self.Score)"
+                
+                if (self.Score > self.HighScore){
+                    self.HighScoreLbl.text = "HighScore:  " + "\(self.Score)"
+                }
+            }
+            enm.removeAction(forKey: "move")
+            enm.run(SKAction.sequence([actionT, actionCallBlockT, actionDoneT]))
+        }
         
         
         Enemy.physicsBody = SKPhysicsBody(rectangleOf: Enemy.size)
@@ -185,21 +227,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
         for touch:AnyObject in touches{
             let location = touch.location(in: self)
             
-            
             if (location.x > 0){
-                Player.position.x = 200*1 - 110
+                
+                Player.run(actionPR)
+                
             }
             else {
-                
-                Player.position.x = 200*0 - 110
+                Player.run(actionPL)
             }
         }
-    
     }
+    
     
     
     override func update(_ currentTime: TimeInterval) {
