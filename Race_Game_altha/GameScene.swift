@@ -22,7 +22,12 @@ struct PhysicsCategory{
 
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
-
+    
+    let pauseButton = SKSpriteNode(imageNamed: "pause")
+    
+    var isSound: Bool = true
+    
+    
     var Score = Int()
     //HighScore?
     var HighScore = Int()
@@ -43,6 +48,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func didMove(to view: SKView) {
         
+        NSLog("\(isSound)")
+        
         var HighscoreDefaults = UserDefaults.standard
         if (HighscoreDefaults.value(forKey: "Highscore") != nil){
             HighScore = HighscoreDefaults.integer(forKey: "Highscore") as NSInteger
@@ -57,7 +64,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.scene?.backgroundColor = UIColor.darkGray
         self.scene?.size = CGSize(width: 1080, height: 1920)
     
-        self.addChild(SKEmitterNode(fileNamed: "MyParticle")!)
+        let emitter = SKEmitterNode(fileNamed: "MyParticle")!
+        //emitter.particleTexture = SKTexture("snow")
+        self.addChild(emitter)
         
         Player.position = CGPoint(x: -110, y: -self.size.height / 10)
         
